@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import MapSmokeTest from "./MapSmokeTest";
+import { getAirports } from "./api/airports";
+import { getCurrentFlights } from "./api/flights";
 
-function App() {
-  const [count, setCount] = useState(0)
+type Airport = {
+  icao: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+};
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+type Flight = {
+  flightNumber: string;
+  from: string;
+  to: string;
+  departedAt: string;
+  arrivesAt: string;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+export default function App() {
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  // load airports once
+  useEffect(() => {
+    getAirports()
+      .then(setAirports)
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load airports"));
+  }, []);
+
+  // poll flights every 1s
+  useEffect(() => {
+  const tick = async () => {
+    try {
+      const data = await getCurrentFlights();
+      setFlights(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load flights");
+    }
+  };
+
+  tick();
+  const timerId = window.setInterval(tick, 1000);
+
+  return () => {
+    window.clearInterval(timerId);
+  };
+}, []);
+
+
+  if (error) return <div style={{ padding: 16 }}>Error: {error}</div>;
+
+  return <MapSmokeTest airports={airports} flights={flights} />;
 }
-
-export default App
