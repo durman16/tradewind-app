@@ -1,73 +1,77 @@
-# React + TypeScript + Vite
+# Tradewind Flights Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small React + TypeScript app that visualizes airports and live flights on an interactive map.
 
-Currently, two official plugins are available:
+Built as part of the Tradewind Scientific Full Stack Software Developer take-home assignment.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- TypeScript
+- Vite
+- Leaflet (react-leaflet)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Display airports on the map
+- Poll live flights every 1 second
+- Show flights as labeled markers
+- Sidebar with current flights list
+- Click a flight to navigate to its current position
+- Clean component structure (api / hooks / components / types)
+- Type-safe code with strict TypeScript
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Setup
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 1. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+npm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 2. Create environment file
+
+Create a `.env` file in the project root:
+
+VITE_API_BASE_URL=http://xiapp.tradewindapps.com:9912  
+VITE_API_TOKEN=YOUR_TOKEN_HERE
+
+### 3. Start the app
+
+npm run dev
+
+Open:
+http://localhost:5173
+
+---
+
+## Project Structure
+
+src/
+- api/        → API calls
+- hooks/      → data fetching logic
+- components/ → Map + Sidebar UI
+- types/      → shared TypeScript types
+
+---
+
+## Notes
+
+- Flights are polled every second using a custom hook.
+- Environment variables are used for API configuration.
+- In a production system, secrets should be handled by a backend.
+- With more time, I would add:
+  - follow-mode toggle
+  - clustering for dense markers
+  - improved mobile UI
+  - unit tests
+
+---
+
+## Author
+
+Olivia Durman
