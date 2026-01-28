@@ -1,14 +1,6 @@
-const BASE_URL = "http://xiapp.tradewindapps.com:9912";
-const TOKEN = "9265ee96af02fe95e132e33a447f8f08";
+import { apiGet } from "./client";
+import type { Flight } from "../types/flight";
 
-export async function getCurrentFlights() {
-  const res = await fetch(`${BASE_URL}/currentflights`, {
-    headers: {
-      "X-API-Token": TOKEN,
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch flights");
-
-  return res.json();
+export function getCurrentFlights(signal?: AbortSignal) {
+  return apiGet<Flight[]>("/currentflights", signal);
 }

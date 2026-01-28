@@ -1,58 +1,20 @@
-import { useEffect, useState } from "react";
-import MapSmokeTest from "./MapSmokeTest";
-import { getAirports } from "./api/airports";
-import { getCurrentFlights } from "./api/flights";
-
-type Airport = {
-  icao: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-};
-
-type Flight = {
-  flightNumber: string;
-  from: string;
-  to: string;
-  departedAt: string;
-  arrivesAt: string;
-  latitude: number | null;
-  longitude: number | null;
-};
+import { MapView } from "./components/MapView";
+import { Sidebar } from "./components/Sidebar";
+import { useAirports } from "./hooks/useAirports";
+import { useFlights } from "./hooks/useFlights";
+import { useState } from "react";
+import type { Flight } from "./types/flight";
 
 export default function App() {
-  const [airports, setAirports] = useState<Airport[]>([]);
-  const [flights, setFlights] = useState<Flight[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const { data: airports } = useAirports();
+  const { data: flights } = useFlights(1000);
 
-  // load airports once
-  useEffect(() => {
-    getAirports()
-      .then(setAirports)
-      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load airports"));
-  }, []);
+  const [selected, setSelected] = useState<Flight | null>(null);
 
-  // poll flights every 1s
-  useEffect(() => {
-  const tick = async () => {
-    try {
-      const data = await getCurrentFlights();
-      setFlights(data);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load flights");
-    }
-  };
-
-  tick();
-  const timerId = window.setInterval(tick, 1000);
-
-  return () => {
-    window.clearInterval(timerId);
-  };
-}, []);
-
-
-  if (error) return <div style={{ padding: 16 }}>Error: {error}</div>;
-
-  return <MapSmokeTest airports={airports} flights={flights} />;
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
+      <Sidebar flights={flights} onSelect={setSelected} />
+      <MapView airports={airports} flights={flights} selectedFlight={selected} />
+    </div>
+  );
 }
