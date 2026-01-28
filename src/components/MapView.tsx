@@ -10,7 +10,7 @@ function FlyToFlight({ flight }: { flight: Flight | null }) {
 
   if (!flight || flight.latitude == null || flight.longitude == null) return null;
 
-  map.flyTo([flight.latitude!, flight.longitude!], 7);
+  map.flyTo([flight.latitude!, flight.longitude!], 10);
 
   return null;
 }
@@ -23,8 +23,6 @@ type Props = {
 };
 
 export function MapView({ airports, flights, selectedFlight }: Props) {
-//   const center: [number, number] = selectedFlight ? [selectedFlight.latitude, selectedFlight.longitude] : [45.4215, -75.6972];
-
   const center: [number, number] =  [45.4215, -75.6972];
   const flying = flights.filter((f) => f.latitude != null && f.longitude != null);
 
